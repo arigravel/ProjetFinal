@@ -1,7 +1,7 @@
 # Arianne Gravel
 # 1928883
 
-class Personne(object):
+class Personne:
     """Définition de la classe"""
 
     # Définiton du constructeur - initialiser les attributs
