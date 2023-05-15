@@ -95,5 +95,7 @@ class Garage(object):
 
     # Retourne un objet de type "list[Reparation]" de la voiture dont le numéro de plaque est donné en paramètre
     def getreparation(self, numvoiture: str) -> list[Reparation]:
-        reparation: list = []
-        for voiture in
+        reparation: Reparation
+        for voiture in self.__voitures:
+            if element.get_numeroplaque() == numvoiture:
+                return self.ajouterreparation(voiture,reparation)
