@@ -3,9 +3,11 @@
 
 from Employe import *
 from Voiture import *
+from pathlib import Path
+import jsonpickle
 
 
-class Garage:
+class Garage(object):
     """Définition de la classe"""
 
     # Définiton du constructeur - initialiser les attributs
@@ -38,16 +40,38 @@ class Garage:
     # Les autres méthodes
 
     # Sérialise en format JSON un objet de type "Garage" vers un fichier
-    def serialisergarage(cls, element: Garage, fichier: str) -> None:
-        pass
+    @classmethod
+    def serialisergarage(cls, element: object, fichier: str) -> None:
+        # ouvrir le fichier (creer le stream)
+        path: Path = Path(fichier)
+        stream = path.open('w')
+        # serialiser l'élément vers le fichier
+        strjson: str = jsonpickle.encode(element, indent=4, separators=(',', ':'))
+        # Écrire le stream vers le ficher
+        stream.write(strjson)
+
+        # fermer le stream
+        stream.flush()
+        stream.close()
 
     # Désérialise un fichier en format JSON qu'elle reçoit en paramètre vers un objet de type "Garage"
-    def deserialisergarage(cls, fichier: str) -> Garage:
-        pass
+    @classmethod
+    def deserialisergarage(cls, fichier: str) -> object:
+        # ouvrir le fichier (creer le stream)
+        path: Path = Path(fichier)
+        stream = path.open('r')
+        # deserialiser le fichier vers un objet garage
+        strjson = stream.read()  # Lire la chaine à partir du fichier
+        reponse: object = jsonpickle.decode(strjson)
+
+        # fermer le stream
+        stream.close()
+        # retourner le resultat
+        return reponse
 
     # Ajoute un objet de type "Voiture" qu'elle reçoit en paramètre à l'attribut "voitures" de la classe "Garage"
     def ajoutervoiture(self, element: Voiture) -> None:
-        pass
+        self.__voitures.append(element)
 
     # Retourne un objet de type "Voiture" dont le numéro de plaque est donné en paramètre
     def getvoiture(self, numvoiture: str) -> Voiture:
