@@ -7,7 +7,7 @@ class Employe(Personne):
     """Définition de la classe"""
 
     # Définiton du constructeur - initialiser les attributs
-    def __init__(self, code: int, fonction: str):
+    def __init__(self, code: int, nom: str, prenom: str, fonction: str):
         self.set_code(code)
         super().__init__(nom, prenom)
         self.set_fonction(fonction)
