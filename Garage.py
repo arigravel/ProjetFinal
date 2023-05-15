@@ -12,11 +12,11 @@ class Garage(object):
     """Définition de la classe"""
 
     # Définiton du constructeur - initialiser les attributs
-    def __init__(self, nom: str, adresse: str, telephone: str):
+    def __init__(self, nom: str, adresse: str, telephone: str, employes: list[Employe]):
         self.set_nom(nom)
         self.set_adresse(adresse)
         self.set_telephone(telephone)
-        self.__employes: list[Employe] = []
+        self.set_employe(employes)
         self.__voitures: list[Voiture] = []
 
     # Les méthodes d'accès
@@ -38,7 +38,16 @@ class Garage(object):
     def set_telephone(self, value: str) -> None:
         self.__telephone = value
 
+    def get_employe(self) -> list[Employe]:
+        return self.__employe
+
+    def set_employe(self, value: list[Employe]) -> None:
+        self.__employe = value
+
     # Les autres méthodes
+
+    def ajouter(self, value: Employe) -> None:
+        self.__employe.append(value)
 
     # Sérialise en format JSON un objet de type "Garage" vers un fichier
     @classmethod
@@ -86,4 +95,5 @@ class Garage(object):
 
     # Retourne un objet de type "list[Reparation]" de la voiture dont le numéro de plaque est donné en paramètre
     def getreparation(self, numvoiture: str) -> list[Reparation]:
-        pass
+        reparation: list = []
+        for voiture in
