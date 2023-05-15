@@ -46,6 +46,7 @@ class Garage(object):
 
     # Les autres méthodes
 
+    # Ajoute des employés à la liste "employes"
     def ajouter(self, value: Employe) -> None:
         self.__employe.append(value)
 
