@@ -3,6 +3,7 @@
 
 from Employe import *
 from Voiture import *
+from Reparation import *
 from pathlib import Path
 import jsonpickle
 
@@ -81,7 +82,7 @@ class Garage(object):
 
     # Ajoute un objet de type "Reparation" qu'elle reçoit en paramètre à l'attribut "reparations" de la classe "Voiture"
     def ajouterreparation(self, numvoiture: str, reparation: Reparation) -> None:
-        pass
+        self.ajouterreparation(numvoiture, reparation)
 
     # Retourne un objet de type "list[Reparation]" de la voiture dont le numéro de plaque est donné en paramètre
     def getreparation(self, numvoiture: str) -> list[Reparation]:
