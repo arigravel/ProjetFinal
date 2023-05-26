@@ -1,9 +1,18 @@
+# Arianne Gravel
+# 1928883
+
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import messagebox
+from tkinter.constants import *
+from Garage import *
+from Reparation import *
 
 
 class ProjetFinalUI:
     def __init__(self, top=None):
+        # Création de l'établissement
+        self.mongarage: Garage = None
         """This class configures and populates the toplevel window.
            top is the toplevel containing window."""
 
@@ -593,8 +602,8 @@ class ProjetFinalUI:
         self.Button_afficher_reparation_consultations.configure(text='''Afficher réparations''')
 
         # Cération du combo box
-        cbnumplaque = ttk.Combobox(self.TNotebook1_t4)
-        cbnumplaque.place(relx=0.339, rely=0.041, relheight=0.126, relwidth=0.346)
+        self.cbnumplaque = ttk.Combobox(self.TNotebook1_t4)
+        self.cbnumplaque.place(relx=0.339, rely=0.041, relheight=0.126, relwidth=0.346)
 
         # Cération du tableau (treeview)
         colonnes: tuple[int] = (1, 2, 3, 4, 5)
@@ -617,6 +626,91 @@ class ProjetFinalUI:
         # placer le treeview sur la fenetre principale
         self.treeview.place(relx=0.051, rely=0.366, height=241, width=524)
 
+        # La gestion des événements
+        self.Button_cree_garage.configure(command=self.btnCreerGarageClick)
+        self.Button_seseriliser_garage.configure(command=self.btnSerialiserClick)
+        self.Button_deseriliser_garage.configure(command=self.btnDeSerialiserClick)
+        self.Button_ajouter_voiture.configure(command=self.btnAjouterVoitureClick)
+        self.Button_afficher_reparation_consultations.configure(command=self.btnAfficherReparationClick)
+
+    # Configuration des boutons
+
+    # Boutons de la page garage
+    def btnCreerGarageClick(self):
+        try:
+            # lire les valeurs des entry du formulaire
+            nom: str = self.Entry_nom_garage.get()
+            adresse: str = self.Entry_adresse_garage.get()
+            telephone: str = self.Entry_telephone_garage.get()
+            # ajouter le garage
+            self.mongarage = Garage(nom, adresse, telephone)
+        except Exception as ex:
+            messagebox.showerror("Erreur", ex)
+
+    def btnSerialiserClick(self):
+        try:
+            if self.Entry_fichier_garage.get().__len__() > 0:
+                jsonserialiseur: Garage.serialisergarage = Garage.serialisergarage(self.mongarage, self.Entry_fichier_garage.get())
+        except Exception as ex:
+            messagebox.showinfo('Erreurs', 'Le nom du fichier est vide...')
+
+    def btnDeSerialiserClick(self, *args):
+        try:
+            if self.Entry_fichier_garage.get().__len__() > 0:
+                jsonserialiseur: Garage.deserialisergarage = Garage.deserialisergarage(self.Entry_fichier_garage.get())
+                # Affecte le résultat à la propriété "__mongarage"
+                self.mongarage = jsonserialiseur
+        except Exception as ex:
+            messagebox.showinfo('Erreurs', 'Le nom du fichier est vide...')
+
+    # Boutons de la page voiture
+    def btnAjouterVoitureClick(self):
+        try:
+            # lire les valeurs des entry du formulaire
+            num_plaque: str = self.Entry_num_plaque_voiture.get()
+            marque: str = self.Entry_marque_voiture.get()
+            couleur: str = self.Entry_couleur_voiture.get()
+            modele: str = self.Entry_modele_voiture.get()
+            annee: int = int(self.Entry_annee_voiture.get())
+            nom_proprio: str = self.Entry_nom_proprio_voiture.get()
+            prenom_proprio: str = self.Entry_prenom_proprio_voiture.get()
+            courriel_proprio: str = self.Entry_courriel_proprio_voiture.get()
+            telephone_proprio: str = self.Entry_telephone_proprio_voiture.get()
+            # créer une voiture
+            voiture: Voiture = Voiture(num_plaque, marque, modele, couleur, annee, Client(nom_proprio, prenom_proprio, telephone_proprio, courriel_proprio))
+            # appelle la méthode et lui envoie une valeur en paramètre
+            self.mongarage.ajoutervoiture(voiture)
+            messagebox.showinfo('Infos', 'Voiture et propriétaire ajouté avec succès !')
+        except ValueError as ex:
+            messagebox.showerror('Erreur', ex.args[0])
+
+    # Boutons et autre fonction de la page configuration
+    def get_numero_plaque_Combobox(self):
+        ls_numero_plaque = []
+        num_plaque: str = self.Entry_num_plaque_voiture.get()
+        voiture: Voiture = self.mongarage.getvoiture(num_plaque)
+        if voiture is not None:
+            ls_numero_plaque.append(voiture.get_numeroplaque())
+        self.cbnumplaque.configure(values=ls_numero_plaque)
+
+    def btnAfficherReparationClick(self):
+        # Vider le treeview
+        for element in self.treeview.get_children():
+            self.treeview.delete(element)
+        # Remplir le treeview
+        i = 0
+        num_plaque = self.cbnumplaque
+        try:
+            for voiture in num_plaque:
+                if self.mongarage.getvoiture(voiture) == num_plaque:
+                    i += 1
+                    self.treeview.insert("", "end", iid=str(i), values=(self.Entry_code_reparations,
+                                                                        self.Entry_description_reparations,
+                                                                        self.Entry_num_technicien_reparation,
+                                                                        self.Entry_date_reparations,
+                                                                        self.Entry_montant_reparations))
+        except Exception as ex:
+            messagebox.showerror("Erreur", ex)
 
 def start_up():
     root = tk.Tk()
